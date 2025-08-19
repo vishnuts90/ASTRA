@@ -18,13 +18,21 @@ import { TranscriptionDisplay } from '@/components/TranscriptionDisplay';
 import { SummaryGenerator } from '@/components/SummaryGenerator';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { AuthModal } from '@/components/AuthModal';
 import { useAppStore } from '@/store/useAppStore';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'record' | 'upload'>('record');
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const { transcriptionResult } = useAppStore();
+
+  const handleAuthClick = (mode: 'login' | 'register') => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
+  };
 
   const features = [
     {
@@ -50,8 +58,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-teal-50">
-      <Header />
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-teal-50 to-orange-50">
+      <Header onAuthClick={handleAuthClick} />
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
@@ -181,6 +189,13 @@ export default function Home() {
       )}
 
       <Footer />
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        mode={authMode}
+      />
     </div>
   );
 }

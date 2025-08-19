@@ -17,6 +17,7 @@ import { useAppStore } from '@/store/useAppStore';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { AuthModal } from '@/components/AuthModal';
 import { TranscriptionHistory, Language } from '@/types';
 
 export default function HistoryPage() {
@@ -27,6 +28,8 @@ export default function HistoryPage() {
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [filteredHistory, setFilteredHistory] = useState<TranscriptionHistory[]>([]);
   const [isRegenerating, setIsRegenerating] = useState<string | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   // Set default date range to current month
   useEffect(() => {
@@ -113,6 +116,11 @@ export default function HistoryPage() {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  const handleAuthClick = (mode: 'login' | 'register') => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
+  };
+
   const languages = [
     { code: 'all', name: 'All Languages' },
     { code: 'en', name: 'English' },
@@ -129,8 +137,8 @@ export default function HistoryPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-teal-50">
-      <Header />
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-teal-50 to-orange-50">
+      <Header onAuthClick={handleAuthClick} />
       
       <div className="pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -333,6 +341,13 @@ export default function HistoryPage() {
       </div>
 
       <Footer />
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        mode={authMode}
+      />
     </div>
   );
 }

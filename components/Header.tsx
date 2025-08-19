@@ -12,10 +12,12 @@ import {
 import { useAppStore } from '@/store/useAppStore';
 import { AuthModal } from './AuthModal';
 
-export function Header() {
+interface HeaderProps {
+  onAuthClick?: (mode: 'login' | 'register') => void;
+}
+
+export function Header({ onAuthClick }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const { user, isAuthenticated, setUser } = useAppStore();
 
   const navigation = [
@@ -31,8 +33,7 @@ export function Header() {
   };
 
   const handleAuthClick = (mode: 'login' | 'register') => {
-    setAuthMode(mode);
-    setAuthModalOpen(true);
+    onAuthClick?.(mode);
     setIsMenuOpen(false);
   };
 
@@ -179,12 +180,6 @@ export function Header() {
         )}
       </nav>
 
-      {/* Auth Modal */}
-      <AuthModal 
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        mode={authMode}
-      />
     </header>
   );
 }
