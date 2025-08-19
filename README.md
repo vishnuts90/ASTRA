@@ -61,7 +61,16 @@ ASTRA is a modern web application that converts audio files (live or uploaded) i
    ```env
    # Gemini AI API Key (Required for transcription)
    # Get your API key from: https://makersuite.google.com/app/apikey
-   NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
+   GOOGLE_API_KEY=your_gemini_api_key_here
+   
+   # Google OAuth Credentials (Required for authentication)
+   # Get these from: https://console.cloud.google.com/apis/credentials
+   GOOGLE_CLIENT_ID=your_google_client_id_here
+   GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+   
+   # NextAuth Configuration
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your_nextauth_secret_here
    ```
 
 4. **Run the development server**
@@ -80,6 +89,22 @@ ASTRA is a modern web application that converts audio files (live or uploaded) i
 2. **Create API Key**: Click "Create API Key" and copy the key
 3. **Add to Environment**: Paste the key in your `.env.local` file
 4. **Restart Server**: Restart the development server after adding the key
+
+## 🔐 Setting Up Google OAuth
+
+1. **Create Google Cloud Project**: Visit [Google Cloud Console](https://console.cloud.google.com/)
+2. **Enable Google+ API**: Go to APIs & Services > Library > Search for "Google+ API" and enable it
+3. **Create OAuth Credentials**: 
+   - Go to APIs & Services > Credentials
+   - Click "Create Credentials" > "OAuth 2.0 Client IDs"
+   - Choose "Web application"
+   - Add authorized redirect URIs:
+     - `http://localhost:3000/api/auth/callback/google` (for development)
+     - `https://yourdomain.com/api/auth/callback/google` (for production)
+4. **Copy Credentials**: Copy the Client ID and Client Secret
+5. **Add to Environment**: Add them to your `.env.local` file
+6. **Generate NextAuth Secret**: Run `openssl rand -base64 32` to generate a secret
+7. **Restart Server**: Restart the development server
 
 ## 🛠️ Tech Stack
 

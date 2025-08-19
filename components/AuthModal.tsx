@@ -9,6 +9,7 @@ import {
   EyeIcon,
   EyeSlashIcon
 } from '@heroicons/react/24/outline';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useAppStore } from '@/store/useAppStore';
 
 interface AuthModalProps {
@@ -19,6 +20,7 @@ interface AuthModalProps {
 
 export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
   const { setUser } = useAppStore();
+  const { data: session } = useSession();
   const [isLogin, setIsLogin] = useState(mode === 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,29 +33,16 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
     setError('');
     
     try {
-      // Simulate Google OAuth process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const result = await signIn('google', {
+        callbackUrl: '/',
+        redirect: false,
+      });
       
-      // Mock user data - in real implementation, this would come from Google OAuth
-      const mockUser = {
-        id: 'user_' + Date.now(),
-        email: 'user@example.com',
-        name: 'John Doe',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-        preferences: {
-          defaultTargetLanguage: 'en',
-          audioQuality: 'high' as const,
-          autoTranslate: true,
-          theme: 'light' as const,
-          notifications: true,
-        },
-        createdAt: new Date(),
-        lastLoginAt: new Date(),
-      };
-      
-      setUser(mockUser);
-      onClose();
-      
+      if (result?.error) {
+        setError('Failed to authenticate with Google. Please try again.');
+      } else if (result?.ok) {
+        onClose();
+      }
     } catch (error) {
       setError('Failed to authenticate with Google. Please try again.');
     } finally {

@@ -10,6 +10,7 @@ import {
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
 import { useAppStore } from '@/store/useAppStore';
+import { useSession, signOut } from 'next-auth/react';
 import { AuthModal } from './AuthModal';
 
 interface HeaderProps {
@@ -18,6 +19,7 @@ interface HeaderProps {
 
 export function Header({ onAuthClick }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session } = useSession();
   const { user, isAuthenticated, setUser } = useAppStore();
 
   const navigation = [
@@ -27,7 +29,8 @@ export function Header({ onAuthClick }: HeaderProps) {
     { name: 'About', href: '#about' },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/' });
     setUser(null);
     setIsMenuOpen(false);
   };
@@ -72,12 +75,12 @@ export function Header({ onAuthClick }: HeaderProps) {
 
           {/* User Menu / Auth */}
           <div className="hidden md:block">
-            {isAuthenticated ? (
+            {session?.user ? (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   <UserCircleIcon className="w-8 h-8 text-gray-600" />
                   <span className="text-sm font-medium text-gray-700">
-                    {user?.name || user?.email}
+                    {session.user.name || session.user.email}
                   </span>
                 </div>
                 <button
@@ -143,12 +146,12 @@ export function Header({ onAuthClick }: HeaderProps) {
               
               {/* Mobile Auth */}
               <div className="pt-4 border-t border-gray-200">
-                {isAuthenticated ? (
+                {session?.user ? (
                   <div className="space-y-2">
                     <div className="flex items-center px-3 py-2">
                       <UserCircleIcon className="w-6 h-6 text-gray-600 mr-2" />
                       <span className="text-sm font-medium text-gray-700">
-                        {user?.name || user?.email}
+                        {session.user.name || session.user.email}
                       </span>
                     </div>
                     <button
