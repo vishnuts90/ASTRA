@@ -10,20 +10,29 @@ import {
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
 import { useAppStore } from '@/store/useAppStore';
+import { AuthModal } from './AuthModal';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const { user, isAuthenticated, setUser } = useAppStore();
 
   const navigation = [
-    { name: 'Home', href: '#home' },
+    { name: 'Home', href: '/' },
+    { name: 'History', href: '/history' },
     { name: 'Features', href: '#features' },
-    { name: 'History', href: '#history' },
     { name: 'About', href: '#about' },
   ];
 
   const handleLogout = () => {
     setUser(null);
+    setIsMenuOpen(false);
+  };
+
+  const handleAuthClick = (mode: 'login' | 'register') => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
     setIsMenuOpen(false);
   };
 
@@ -79,10 +88,16 @@ export function Header() {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <button className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <button 
+                  onClick={() => handleAuthClick('login')}
+                  className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   Sign In
                 </button>
-                <button className="btn-primary text-sm">
+                <button 
+                  onClick={() => handleAuthClick('register')}
+                  className="btn-primary text-sm"
+                >
                   Get Started
                 </button>
               </div>
@@ -144,10 +159,16 @@ export function Header() {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    <button className="w-full text-left text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-base font-medium transition-colors">
+                    <button 
+                      onClick={() => handleAuthClick('login')}
+                      className="w-full text-left text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                    >
                       Sign In
                     </button>
-                    <button className="w-full btn-primary text-base">
+                    <button 
+                      onClick={() => handleAuthClick('register')}
+                      className="w-full btn-primary text-base"
+                    >
                       Get Started
                     </button>
                   </div>
@@ -157,6 +178,13 @@ export function Header() {
           </motion.div>
         )}
       </nav>
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        mode={authMode}
+      />
     </header>
   );
 }

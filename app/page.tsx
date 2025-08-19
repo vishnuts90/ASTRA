@@ -15,12 +15,16 @@ import { AudioRecorder } from '@/components/AudioRecorder';
 import { FileUpload } from '@/components/FileUpload';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { TranscriptionDisplay } from '@/components/TranscriptionDisplay';
+import { SummaryGenerator } from '@/components/SummaryGenerator';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { useAppStore } from '@/store/useAppStore';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'record' | 'upload'>('record');
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const { transcriptionResult } = useAppStore();
 
   const features = [
     {
@@ -162,7 +166,18 @@ export default function Home() {
 
       {/* Transcription Display */}
       {isTranscribing && (
-        <TranscriptionDisplay onClose={() => setIsTranscribing(false)} />
+        <TranscriptionDisplay 
+          onClose={() => setIsTranscribing(false)} 
+          onShowSummary={() => setShowSummary(true)}
+        />
+      )}
+
+      {/* Summary Generator */}
+      {showSummary && transcriptionResult && (
+        <SummaryGenerator 
+          transcription={transcriptionResult} 
+          onClose={() => setShowSummary(false)} 
+        />
       )}
 
       <Footer />

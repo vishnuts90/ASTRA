@@ -8,16 +8,18 @@ import {
   ClipboardDocumentIcon,
   ArrowDownTrayIcon,
   SpeakerWaveIcon,
-  CheckIcon
+  CheckIcon,
+  SparklesIcon
 } from '@heroicons/react/24/outline';
 import { useAppStore } from '@/store/useAppStore';
 import toast from 'react-hot-toast';
 
 interface TranscriptionDisplayProps {
   onClose: () => void;
+  onShowSummary?: () => void;
 }
 
-export function TranscriptionDisplay({ onClose }: TranscriptionDisplayProps) {
+export function TranscriptionDisplay({ onClose, onShowSummary }: TranscriptionDisplayProps) {
   const [isProcessing, setIsProcessing] = useState(true);
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState<'uploading' | 'processing' | 'translating' | 'completed'>('uploading');
@@ -325,12 +327,21 @@ export function TranscriptionDisplay({ onClose }: TranscriptionDisplayProps) {
                 </div>
               )}
 
-              {/* Export Options */}
+              {/* Summary and Export Options */}
               <div className="border-t border-gray-200 pt-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Export Options
+                  Additional Features
                 </h3>
                 <div className="flex flex-wrap gap-3">
+                  {onShowSummary && (
+                    <button
+                      onClick={onShowSummary}
+                      className="btn-primary flex items-center space-x-2"
+                    >
+                      <SparklesIcon className="w-4 h-4" />
+                      <span>Generate Summary</span>
+                    </button>
+                  )}
                   <button
                     onClick={() => exportText('txt')}
                     className="btn-outline flex items-center space-x-2"
