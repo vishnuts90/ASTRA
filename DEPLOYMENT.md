@@ -42,9 +42,7 @@ This guide will help you deploy your ASTRA application to Netlify with full AI t
    ```
 
 4. **Add Environment Variables**
-   - Go to Site settings → Environment variables
-   - Add: `NEXT_PUBLIC_GEMINI_API_KEY`
-   - Value: `AIzaSyAaeBf6PeD8foNPTmeyFO1QpB8SiAJ-6Q0`
+   - 
 
 ### Step 3: Deploy
 
